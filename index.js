@@ -37,7 +37,7 @@ async function run() {
             const query = { _id: new ObjectId(id) }
             const options = {
                 // Include only the `title` and `imdb` fields in each returned document
-                projection: { title: 1, price: 1, service_id: 1,img:1},
+                projection: { title: 1, price: 1, service_id: 1, img: 1 },
             };
             const result = await serviceCollection.findOne(query, options)
             res.send(result)
@@ -57,6 +57,27 @@ async function run() {
             const booking = req.body;
             const result = await serviceBookCollection.insertOne(booking);
             res.send(result);
+        })
+
+        app.patch("/booking/:id", async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: new ObjectId(id) };
+            const updatedBookings = req.body;
+            const updateDoc = {
+                $set: {
+                   status : updatedBookings.status
+                },
+            };
+            const result = await serviceBookCollection.updateOne(filter,updateDoc);
+            res.send(result)
+
+        })
+
+        app.delete("/booking/:id", async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) }
+            const result = await serviceBookCollection.deleteOne(query)
+            res.send(result)
         })
 
         // Connect the client to the server	(optional starting in v4.7)
